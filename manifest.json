@@ -1,0 +1,9 @@
+{
+	"id": "hotkey-capture",
+	"name": "Hotkey Capture",
+	"version": "1.0.0",
+	"minAppVersion": "1.0.0",
+	"description": "Capture and insert keyboard shortcuts into your notes",
+	"author": "User",
+	"isDesktopOnly": true
+}
