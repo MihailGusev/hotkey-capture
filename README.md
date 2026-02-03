@@ -1,37 +1,25 @@
-# Hotkey Capture Plugin для Obsidian
+# Hotkey Capture Plugin for Obsidian
 
-Плагин для захвата и вставки горячих клавиш в заметки.
+A plugin for capturing and inserting hotkeys into your notes.
 
-## Установка
+## Usage
 
-1. Скопируйте папку `hotkey-capture` в:
-   ```
-   ...\.obsidian\plugins\
-   ```
+1. **Ctrl+Alt+H** — enter capture mode (or via Command Palette: "Start capturing hotkey")
+2. Press the desired keys — they are displayed in the status bar
+3. **Esc** — finish and insert the result at the cursor position
 
-2. Перезапустите Obsidian
+## Examples
 
-3. Включите плагин:
-   - Settings → Community plugins → Hotkey Capture → Enable
-
-## Использование
-
-1. **Ctrl+Alt+H** — войти в режим захвата (или через Command Palette: "Start capturing hotkey")
-2. Нажимайте нужные клавиши — они отображаются в статус-баре
-3. **Esc** — завершить и вставить результат в позицию курсора
-
-## Примеры
-
-| Нажатие | Результат |
-|---------|-----------|
-| Ctrl+E, затем T | `Ctrl+E, T` |
+| Input | Result |
+|-------|--------|
+| Ctrl+E, then T | `Ctrl+E, T` |
 | Ctrl+Shift+P | `Ctrl+Shift+P` |
 | Alt+F4 | `Alt+F4` |
-| Стрелка вверх | `↑` |
+| Arrow Up | `↑` |
 
-## Особенности
+## Features
 
-- Поддержка модификаторов: Ctrl, Alt, Shift, Win
-- Поддержка последовательностей клавиш через запятую
-- Визуальный индикатор в статус-баре
-- Специальные клавиши отображаются понятно (Space, Enter, стрелки и т.д.)
+- Modifier support: Ctrl, Alt, Shift, Win
+- Key sequence support (comma-separated)
+- Visual indicator in the status bar
+- Special keys displayed in a readable format (Space, Enter, arrows, etc.)

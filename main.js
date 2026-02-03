@@ -1,5 +1,9 @@
 const obsidian = require('obsidian');
 
+const DEFAULT_SETTINGS = {
+    stopKey: 'Escape'
+};
+
 class HotkeyCapturePlugin extends obsidian.Plugin {
     constructor() {
         super(...arguments);
@@ -7,9 +11,13 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
         this.capturedKeys = [];
         this.statusBarItem = null;
         this.captureScope = null;
+        this.settings = DEFAULT_SETTINGS;
     }
 
     async onload() {
+        await this.loadSettings();
+        this.addSettingTab(new HotkeyCaptureSettingTab(this.app, this));
+
         this.addCommand({
             id: 'start-hotkey-capture',
             name: 'Start capturing hotkey',
@@ -42,7 +50,7 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
             this.statusBarItem.addClass('hotkey-capture-active');
         }
 
-        new obsidian.Notice('Hotkey capture started. Press keys, then Esc to finish.');
+        new obsidian.Notice('Hotkey capture started. Press keys, then ' + this.settings.stopKey + ' to finish.');
 
         // Создаём scope с высшим приоритетом для перехвата ВСЕХ клавиш
         this.captureScope = new obsidian.Scope();
@@ -59,7 +67,7 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
     handleKeyDown(e) {
         if (!this.isCapturing) return true; // пропускаем если не захватываем
 
-        if (e.key === 'Escape') {
+        if (e.key === this.settings.stopKey) {
             this.stopCapture(true);
             return false; // блокируем
         }
@@ -143,6 +151,14 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
         this.capturedKeys = [];
     }
 
+    async loadSettings() {
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    }
+
+    async saveSettings() {
+        await this.saveData(this.settings);
+    }
+
     insertText(text) {
         const view = this.app.workspace.getActiveViewOfType(obsidian.MarkdownView);
         if (!view) return;
@@ -154,6 +170,52 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
         editor.setCursor({
             line: cursor.line,
             ch: cursor.ch + text.length
+        });
+    }
+}
+
+class HotkeyCaptureSettingTab extends obsidian.PluginSettingTab {
+    constructor(app, plugin) {
+        super(app, plugin);
+        this.plugin = plugin;
+    }
+
+    display() {
+        const { containerEl } = this;
+        containerEl.empty();
+
+        new obsidian.Setting(containerEl)
+            .setName('Start capture shortcut')
+            .setDesc('Managed by Obsidian — go to Settings → Hotkeys and search "Hotkey Capture" to change it.');
+
+        const stopKeySetting = new obsidian.Setting(containerEl)
+            .setName('Stop capture key')
+            .setDesc('The key that stops capturing and inserts the result. Current: ' + this.plugin.settings.stopKey);
+
+        const recordBtn = stopKeySetting.addButton(btn => {
+            btn.setButtonText(this.plugin.settings.stopKey)
+                .onClick(() => {
+                    btn.setButtonText('Press a key...');
+                    const scope = new obsidian.Scope();
+                    scope.register(null, null, (evt) => {
+                        if (['Control', 'Alt', 'Shift', 'Meta'].includes(evt.key)) return false;
+                        evt.preventDefault();
+                        this.plugin.app.keymap.popScope(scope);
+                        this.plugin.settings.stopKey = evt.key;
+                        this.plugin.saveSettings();
+                        this.display();
+                        return false;
+                    });
+                    this.plugin.app.keymap.pushScope(scope);
+                    const handler = (evt) => {
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        if (['Control', 'Alt', 'Shift', 'Meta'].includes(evt.key)) return;
+                        document.removeEventListener('keydown', handler, true);
+                    };
+                    document.addEventListener('keydown', handler, true);
+                });
+            return btn;
         });
     }
 }
