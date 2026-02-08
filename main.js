@@ -21,8 +21,7 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
         this.addCommand({
             id: 'start-hotkey-capture',
             name: 'Start capturing hotkey',
-            hotkeys: [{ modifiers: ['Ctrl', 'Alt'], key: 'h' }],
-            callback: () => this.startCapture()
+            editorCallback: (editor, view) => this.startCapture()
         });
 
         this.statusBarItem = this.addStatusBarItem();
@@ -35,12 +34,6 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
 
     startCapture() {
         if (this.isCapturing) return;
-
-        const view = this.app.workspace.getActiveViewOfType(obsidian.MarkdownView);
-        if (!view) {
-            new obsidian.Notice('Open a note first');
-            return;
-        }
 
         this.isCapturing = true;
         this.capturedKeys = [];
@@ -160,10 +153,8 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
     }
 
     insertText(text) {
-        const view = this.app.workspace.getActiveViewOfType(obsidian.MarkdownView);
-        if (!view) return;
-
-        const editor = view.editor;
+        const editor = this.app.workspace.activeEditor?.editor;
+        if (!editor) return;
         const cursor = editor.getCursor();
         editor.replaceRange(text, cursor);
 
