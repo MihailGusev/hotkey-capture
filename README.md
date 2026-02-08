@@ -4,9 +4,11 @@ A plugin for capturing and inserting hotkeys into your notes.
 
 ## Usage
 
-1. **Ctrl+Alt+H** — enter capture mode (or via Command Palette: "Start capturing hotkey")
-2. Press the desired keys — they are displayed in the status bar
-3. **Esc** — finish and insert the result at the cursor position
+1. Open Obsidian hotkey settings and assign a hotkey that will be used to capture
+2. Press this hotkey to enter capture mode (or via Command Palette: "Start capturing hotkey")
+3. Press the desired keys — they are displayed in the status bar
+4. Press **Esc** to finish and insert the result at the cursor position. 
+Esc can be changed to other hotkey in plugin settings.  
 
 ## Examples
 
