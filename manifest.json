@@ -4,6 +4,6 @@
 	"version": "1.0.0",
 	"minAppVersion": "1.0.0",
 	"description": "Capture and insert keyboard shortcuts into your notes",
-	"author": "User",
+	"author": "Mikhail Gusev",
 	"isDesktopOnly": true
 }
