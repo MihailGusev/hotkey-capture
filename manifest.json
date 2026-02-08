@@ -3,7 +3,7 @@
 	"name": "Hotkey Capture",
 	"version": "1.0.0",
 	"minAppVersion": "1.0.0",
-	"description": "Capture and insert keyboard shortcuts into your notes",
+	"description": "Capture and insert keyboard shortcuts into your notes.",
 	"author": "Mikhail Gusev",
 	"authorUrl": "https://github.com/MihailGusev/",
 	"isDesktopOnly": true
