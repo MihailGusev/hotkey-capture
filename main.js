@@ -21,7 +21,7 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
         this.addCommand({
             id: 'start-hotkey-capture',
             name: 'Start capturing hotkey',
-            editorCallback: (editor, view) => this.startCapture()
+            editorCallback: (editor, view) => this.startCapture(editor)
         });
 
         this.statusBarItem = this.addStatusBarItem();
@@ -32,11 +32,12 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
         this.stopCapture(false);
     }
 
-    startCapture() {
+    startCapture(editor) {
         if (this.isCapturing) return;
 
         this.isCapturing = true;
         this.capturedKeys = [];
+        this.activeEditor = editor;
 
         if (this.statusBarItem) {
             this.statusBarItem.setText('🎹 Capturing...');
@@ -142,6 +143,7 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
         }
 
         this.capturedKeys = [];
+        this.activeEditor = null;
     }
 
     async loadSettings() {
@@ -153,7 +155,7 @@ class HotkeyCapturePlugin extends obsidian.Plugin {
     }
 
     insertText(text) {
-        const editor = this.app.workspace.activeEditor?.editor;
+        const editor = this.activeEditor;
         if (!editor) return;
         const cursor = editor.getCursor();
         editor.replaceRange(text, cursor);
@@ -183,7 +185,7 @@ class HotkeyCaptureSettingTab extends obsidian.PluginSettingTab {
             .setName('Stop capture key')
             .setDesc('The key that stops capturing and inserts the result. Current: ' + this.plugin.settings.stopKey);
 
-        const recordBtn = stopKeySetting.addButton(btn => {
+        stopKeySetting.addButton(btn => {
             btn.setButtonText(this.plugin.settings.stopKey)
                 .onClick(() => {
                     btn.setButtonText('Press a key...');
